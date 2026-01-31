@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Platforma za ideje</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'post_list' %}">Početna</a>
+        
+        {% if user.is_authenticated %}
+            <span>Bok, {{ user.username }}!</span>
+            <a href="{% url 'post_create' %}">Nova ideja</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Odjava</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Prijava</a>
+            <a href="{% url 'register' %}">Registracija</a>
+        {% endif %}
+    </nav>
+    <hr>
+    
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

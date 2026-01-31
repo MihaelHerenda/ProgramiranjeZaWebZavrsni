@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <small>Objavio: {{ post.author.username }} | {{ post.created_at }}</small>
+    <p>{{ post.content }}</p>
+    
+    <hr>
+    <p><a href="{% url 'post_list' %}">Natrag na listu</a></p>
+
+   
+{% endblock %}
