@@ -1,12 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{{ post.title }}</h1>
-    <small>Objavio: {{ post.author.username }} | {{ post.created_at }}</small>
-    <p>{{ post.content }}</p>
-    
-    <hr>
-    <p><a href="{% url 'post_list' %}">Natrag na listu</a></p>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <a href="{% url 'post_list' %}" class="btn btn-light btn-sm mb-4 rounded-pill px-3">
+            <i class="fas fa-arrow-left me-1"></i> Natrag
+        </a>
 
-   
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-body p-4 p-lg-5">
+                <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
+                    <div class="bg-dark text-white rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                        <span class="fs-4">{{ post.author.username|slice:":1"|upper }}</span>
+                    </div>
+                    <div>
+                        <div class="fw-bold">{{ post.author.username }}</div>
+                        <div class="text-muted small">Objavljeno {{ post.created_at|date:"d.m.Y" }}</div>
+                    </div>
+                </div>
+
+                <h1 class="display-6 fw-bold mb-4">{{ post.title }}</h1>
+                
+                <div class="content-body fs-5 text-secondary" style="line-height: 1.8;">
+                    {{ post.content|linebreaks }}
+                </div>
+            </div>
+            
+            <div class="card-footer bg-light p-4 d-flex gap-2 border-top-0">
+                <button class="btn btn-outline-danger rounded-pill px-4">
+                    <i class="far fa-heart me-1"></i> Sviđa mi se
+                </button>
+                <button class="btn btn-outline-dark rounded-pill px-4">
+                    <i class="far fa-comment me-1"></i> Komentiraj
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
