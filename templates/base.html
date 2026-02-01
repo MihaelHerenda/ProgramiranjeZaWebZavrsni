@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ideje</title>
+    <title>Platforma za Ideje</title>
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary-color: #4f46e5;
             --primary-hover: #4338ca;
-            --bg-color: #f3f4f6;
+            --bg-color: #f9fafb;
             --nav-bg: #1f2937;
         }
 
@@ -20,97 +23,62 @@
             background-color: var(--bg-color);
             font-family: 'Inter', sans-serif;
             color: #1f2937;
-            padding-top: 80px; 
+            padding-top: 70px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Navigacija */
         .navbar {
             background-color: var(--nav-bg) !important;
-            padding: 0.75rem 0;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            z-index: 1040; 
+            padding: 0.6rem 0;
         }
         
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             letter-spacing: -0.025em;
+            color: white !important;
+        }
+
+        .navbar-brand i {
+            color: #818cf8; 
         }
 
         .nav-link {
-            color: #d1d5db !important;
+            color: #e5e7eb !important;
             font-weight: 500;
-            transition: color 0.2s;
         }
         
         .nav-link:hover {
             color: white !important;
         }
 
-        /* Hamburger Meni */
-        .offcanvas {
-            background-color: var(--nav-bg);
-            --bs-offcanvas-width: auto; 
-            min-width: 280px; /* Malo širi default za mobitel da gumbi ljepše izgledaju */
-            border-left: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .offcanvas-header {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .btn-close-white {
-            filter: invert(1) grayscale(100%) brightness(200%);
-        }
-        
-        /* Gumbi - Opći stil */
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
-        }
-
-        /* KLJUČNA PROMJENA ZA GUMBE */
-        .nav-auth-btn {
-            width: 100%; /* Na mobitelu zauzima punu širinu */
-            text-align: center;
-            display: block; /* Osigurava da se rastegne */
-            margin-bottom: 0.5rem; /* Razmak između gumba na mobitelu */
-        }
-
-        /* Desktop postavke (ekrani širi od 992px) */
-        @media (min-width: 992px) {
-            .nav-auth-btn {
-                width: auto; /* Vraća na normalnu širinu */
-                min-width: 140px; /* Fiksna širina da budu jednaki */
-                margin-bottom: 0; /* Miče razmak jer su jedan pored drugog */
-                display: inline-block;
-            }
-            
-            /* Na desktopu želimo razmak između stavki */
-            .navbar-nav {
-                gap: 1rem; 
-            }
-        }
-
         .main-container {
-            max-width: 800px;
-            margin: 0 auto 2rem auto;
-            padding: 0 1rem;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+            flex: 1;
         }
 
         .form-control {
-            padding: 0.75rem;
+            padding: 0.6rem 1rem;
             border-radius: 0.5rem;
             border: 1px solid #d1d5db;
         }
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
         }
     </style>
 </head>
@@ -118,55 +86,46 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'post_list' %}">
-                <i class="fas fa-layer-group me-2"></i>Moje Ideje
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'post_list' %}">
+                <i class="fas fa-lightbulb"></i> Moje Ideje
             </a>
             
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar">
-                
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title">Izbornik</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                
-                <div class="offcanvas-body">
-                    <!-- Maknuo sam 'align-items-start' da dopustimo gumbima da se rastegnu -->
-                    <ul class="navbar-nav justify-content-end flex-grow-1 align-items-lg-center p-2 p-lg-0">
-                        
-                        {% if user.is_authenticated %}
-                            <li class="nav-item mb-3 mb-lg-0">
-                                <span class="nav-link disabled text-white-50 ps-0 text-center text-lg-start">
-                                    <i class="far fa-user me-1"></i> {{ user.username }}
-                                </span>
-                            </li>
-                            <li class="nav-item w-100 w-lg-auto">
-                                <a href="{% url 'post_create' %}" class="btn btn-primary btn-sm rounded-pill px-4 nav-auth-btn">
-                                    <i class="fas fa-plus me-1"></i> Nova ideja
-                                </a>
-                            </li>
-                            <li class="nav-item w-100 w-lg-auto">
-                                <form action="{% url 'logout' %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-light btn-sm border-0 rounded-pill px-3 nav-auth-btn">
-                                        <i class="fas fa-sign-out-alt me-2"></i> Odjava
-                                    </button>
-                                </form>
-                            </li>
-                        {% else %}
-                            <li class="nav-item w-100 w-lg-auto">
-                                <a class="btn btn-primary btn-sm rounded-pill px-4 nav-auth-btn" href="{% url 'login' %}">Prijava</a>
-                            </li>
-                            <li class="nav-item w-100 w-lg-auto">
-                                <a class="btn btn-outline-light btn-sm rounded-pill px-4 nav-auth-btn" href="{% url 'register' %}">Registracija</a>
-                            </li>
-                        {% endif %}
-                        
-                    </ul>
-                </div>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-2 mt-3 mt-lg-0">
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="nav-link disabled text-white-50">
+                                <i class="far fa-user me-1"></i> {{ user.username }}
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'post_create' %}" class="btn btn-primary btn-sm rounded-pill px-4 w-100 fw-bold">
+                                <i class="fas fa-plus me-1"></i> Nova ideja
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{% url 'logout' %}" method="post" class="d-flex">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-light btn-sm rounded-pill px-3 w-100">
+                                    <i class="fas fa-sign-out-alt me-1"></i> Odjava
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light btn-sm rounded-pill px-4 w-100" href="{% url 'login' %}">Prijava</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary btn-sm rounded-pill px-4 w-100 fw-bold" href="{% url 'register' %}">Registracija</a>
+                        </li>
+                    {% endif %}
+                    
+                </ul>
             </div>
         </div>
     </nav>
@@ -174,7 +133,7 @@
     <div class="main-container">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3 shadow-sm mb-4" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -185,6 +144,7 @@
         {% endblock %}
     </div>
 
+    <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
