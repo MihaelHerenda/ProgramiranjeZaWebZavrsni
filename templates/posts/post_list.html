@@ -1,21 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold m-0 text-dark">Najnovije objave</h2>
-    {% if user.is_authenticated %}
-    <!-- Mobilni "Floating Action Button" se može dodati ovdje ako želiš, ali zasad je gumb u meniju -->
-    {% endif %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="fw-bold m-0 text-dark">Najnovije objave</h2>
+    </div>
+    <div class="col-md-6">
+        
+        <form method="get" action="{% url 'post_list' %}">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control rounded-start-pill border-end-0" placeholder="Pretraži po naslovu ili sadržaju..." value="{{ query|default:'' }}">
+                <button class="btn btn-primary rounded-end-pill px-4" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+                {% if query %}
+                   
+                    <a href="{% url 'post_list' %}" class="btn btn-light ms-2 rounded-circle" title="Poništi">
+                        <i class="fas fa-times"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
 </div>
+
 
 <div class="row g-4">
     {% for post in posts %}
     <div class="col-12">
-        <!-- Kartica -->
+        
         <div class="card border-0 custom-card h-100 position-relative">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center mb-3">
-                    <!-- Avatar - Kvadratni sa zaobljenim rubovima (Squircle) umjesto kruga -->
+                    
                     <div class="avatar-box me-3">
                         <span class="fw-bold">{{ post.author.username|slice:":1"|upper }}</span>
                     </div>
@@ -25,7 +42,7 @@
                     </div>
                 </div>
                 
-                <!-- Naslov i Sadržaj - Link rastegnut preko svega -->
+                
                 <a href="{% url 'post_detail' post.pk %}" class="text-decoration-none stretched-link">
                     <h4 class="fw-bold text-dark mb-2 card-title-hover">{{ post.title }}</h4>
                     <p class="text-secondary mb-0" style="line-height: 1.6;">
@@ -34,12 +51,11 @@
                 </a>
             </div>
             
-            <!-- Footer kartice -->
+            
             <div class="card-footer bg-transparent border-top p-3">
                 <div class="d-flex align-items-center text-muted small">
                     <span class="me-4"><i class="far fa-heart me-1"></i> {{ post.total_likes }}</span>
                     <span><i class="far fa-comment me-1"></i> {{ post.comments.count }}</span>
-                    <!-- Strelica koja sugerira akciju, ali ne smeta -->
                     <span class="ms-auto text-primary opacity-0 arrow-icon">
                         <i class="fas fa-arrow-right"></i>
                     </span>
@@ -52,8 +68,11 @@
         <div class="mb-3 text-muted opacity-50">
             <i class="fas fa-wind fa-3x"></i>
         </div>
-        <h4>Još nema ideja...</h4>
-        <p class="text-muted">Budite hrabri i podijelite prvu ideju!</p>
+        <h4>Nema rezultata...</h4>
+        <p class="text-muted">Pokušajte promijeniti pojam pretrage ili objavite novu ideju!</p>
+        {% if query %}
+            <a href="{% url 'post_list' %}" class="btn btn-outline-primary mt-2">Prikaži sve</a>
+        {% endif %}
     </div>
     {% endfor %}
 </div>
@@ -61,36 +80,28 @@
 <style>
     .custom-card {
         background: white;
-        border-radius: 12px; /* Moderniji radius */
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Vrlo suptilna sjena */
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         transition: all 0.2s ease-in-out;
         overflow: hidden;
     }
-
-    /* Hover efekt: Kartica se malo podigne i sjena postane jača */
     .custom-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-
-    /* Avatar stil */
     .avatar-box {
         width: 45px;
         height: 45px;
-        background: #e0e7ff; /* Svijetlo indigo */
+        background: #e0e7ff;
         color: #4f46e5;
-        border-radius: 10px; /* Squircle */
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
-    /* Kad se hovera kartica, naslov mijenja boju */
     .custom-card:hover .card-title-hover {
         color: var(--primary-color);
     }
-    
-    /* Strelica se pojavi na hover */
     .custom-card:hover .arrow-icon {
         opacity: 1 !important;
         transition: opacity 0.2s;

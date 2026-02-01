@@ -3,26 +3,41 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-10">
-        <!-- Gumb za povratak -->
+        
         <a href="{% url 'post_list' %}" class="btn btn-light btn-sm mb-4 rounded-pill px-3">
             <i class="fas fa-arrow-left me-1"></i> Natrag
         </a>
 
-        <!-- Glavna kartica posta -->
+        
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
             <div class="card-body p-4 p-lg-5">
-                <!-- Zaglavlje posta (Autor i datum) -->
-                <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
-                    <div class="bg-dark text-white rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                        <span class="fs-4">{{ post.author.username|slice:":1"|upper }}</span>
+                
+                
+                <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-dark text-white rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <span class="fs-4">{{ post.author.username|slice:":1"|upper }}</span>
+                        </div>
+                        <div>
+                            <div class="fw-bold">{{ post.author.username }}</div>
+                            <div class="text-muted small">Objavljeno {{ post.created_at|date:"d.m.Y" }}</div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="fw-bold">{{ post.author.username }}</div>
-                        <div class="text-muted small">Objavljeno {{ post.created_at|date:"d.m.Y" }}</div>
-                    </div>
+
+                    
+                    {% if user == post.author %}
+                        <div>
+                            <a href="{% url 'post_edit' post.pk %}" class="btn btn-outline-primary btn-sm rounded-pill me-1" title="Uredi objavu">
+                                <i class="fas fa-edit"></i> <span class="d-none d-sm-inline">Uredi</span>
+                            </a>
+                            <a href="{% url 'post_delete' post.pk %}" class="btn btn-outline-danger btn-sm rounded-pill" onclick="return confirm('Jeste li sigurni da želite obrisati ovu ideju? Ovo se ne može poništiti.');" title="Obriši objavu">
+                                <i class="fas fa-trash-alt"></i> <span class="d-none d-sm-inline">Obriši</span>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
 
-                <!-- Naslov i Sadržaj -->
+                
                 <h1 class="display-6 fw-bold mb-4">{{ post.title }}</h1>
                 
                 <div class="content-body fs-5 text-secondary" style="line-height: 1.8;">
@@ -30,10 +45,10 @@
                 </div>
             </div>
             
-            <!-- INTERAKCIJA (Lajkovi i Komentari) -->
+            
             <div class="card-footer bg-light p-4 border-top-0">
                 
-                <!-- SEKCIJA ZA LAJKANJE -->
+                
                 <div class="mb-4">
                     {% if user.is_authenticated %}
                         <form action="{% url 'like_post' post.pk %}" method="POST">
@@ -53,19 +68,18 @@
 
                 <hr class="text-muted opacity-25 my-4">
 
-                <!-- SEKCIJA KOMENTARA -->
                 <h5 class="fw-bold mb-4">
                     <i class="far fa-comments me-2"></i>Komentari ({{ comments.count }})
                 </h5>
                 
-                <!-- Forma za dodavanje komentara -->
+                
                 {% if user.is_authenticated %}
                     <div class="mb-5">
                         <form method="post">
                             {% csrf_token %}
                             <div class="d-flex gap-2 align-items-start">
                                 <div class="flex-grow-1">
-                                    {{ form.content }} <!-- Ovo renderira textarea iz forms.py -->
+                                    {{ form.content }}
                                 </div>
                                 <button type="submit" class="btn btn-primary px-4 py-2">
                                     <i class="fas fa-paper-plane"></i>
@@ -83,12 +97,9 @@
                 <div class="comments-list">
                     {% for comment in comments %}
                         <div class="d-flex gap-3 mb-3">
-                            <!-- Avatar komentatora -->
                             <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
                                 {{ comment.display_author|slice:":1"|upper }}
                             </div>
-                            
-                            <!-- Oblačić s tekstom -->
                             <div class="bg-white p-3 rounded-4 shadow-sm w-100 border">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <strong class="text-dark">{{ comment.display_author }}</strong>

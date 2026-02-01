@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .models import Post, Like, Comment
 from .forms import PostForm, CommentForm 
+from django.db.models import Q
 
 
 def register(request):
@@ -16,8 +17,17 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 def post_list(request):
-    posts = Post.objects.all().order_by('-created_at')
-    return render(request, 'posts/post_list.html', {'posts': posts})
+    query = request.GET.get('q') # Dohvati ono što je upisano u tražilicu
+    
+    if query:
+        # Filtriraj po naslovu ILI sadržaju
+        posts = Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        ).order_by('-created_at')
+    else:
+        posts = Post.objects.all().order_by('-created_at')
+        
+    return render(request, 'posts/post_list.html', {'posts': posts, 'query': query})
 
 @login_required
 def post_create(request):
@@ -72,3 +82,31 @@ def like_post(request, pk):
         like.delete()
         
     return redirect('post_detail', pk=pk)
+
+@login_required
+def post_edit(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    
+   
+    if request.user != post.author:
+        return redirect('post_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post) 
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=pk)
+    else:
+        form = PostForm(instance=post)
+    
+    
+    return render(request, 'posts/post_form.html', {'form': form, 'is_edit': True})
+
+@login_required
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    
+    if request.user == post.author:
+        post.delete()
+        
+    return redirect('post_list')
