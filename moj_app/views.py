@@ -109,14 +109,10 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('post_list')
-    template_name = 'posts/post_confirm_delete.html' 
-
+    
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
-    
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
 
 
 def like_post(request, pk):
