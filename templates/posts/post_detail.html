@@ -26,13 +26,17 @@
 
                     
                     {% if user == post.author %}
-                        <div>
-                            <a href="{% url 'post_edit' post.pk %}" class="btn btn-outline-primary btn-sm rounded-pill me-1" title="Uredi objavu">
+                        <div class="d-flex align-items-center gap-1">
+                            <a href="{% url 'post_edit' post.pk %}" class="btn btn-outline-primary btn-sm rounded-pill" title="Uredi objavu">
                                 <i class="fas fa-edit"></i> <span class="d-none d-sm-inline">Uredi</span>
                             </a>
-                            <a href="{% url 'post_delete' post.pk %}" class="btn btn-outline-danger btn-sm rounded-pill" onclick="return confirm('Jeste li sigurni da želite obrisati ovu ideju? Ovo se ne može poništiti.');" title="Obriši objavu">
-                                <i class="fas fa-trash-alt"></i> <span class="d-none d-sm-inline">Obriši</span>
-                            </a>
+                            
+                            <form action="{% url 'post_delete' post.pk %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill" onclick="return confirm('Jeste li sigurni da želite obrisati ovu ideju?');" title="Obriši objavu">
+                                    <i class="fas fa-trash-alt"></i> <span class="d-none d-sm-inline">Obriši</span>
+                                </button>
+                            </form>
                         </div>
                     {% endif %}
                 </div>
